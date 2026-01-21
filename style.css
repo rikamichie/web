@@ -1,0 +1,534 @@
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Serif+JP:wght@900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap");
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  /* font-family: "Instrument Serif", serif; */
+  font-family: "EB Garamond", serif;
+
+  scroll-behavior: smooth;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+a {
+  color: var(--btn-color);
+  text-decoration: none;
+}
+
+p,
+h1,
+h2 {
+  margin: 0;
+  padding: 0;
+}
+
+#content {
+  position: relative;
+  width: 100dvw;
+  height: 100dvh;
+}
+
+.celda {
+  width: 100%;
+  height: 100%;
+  position: absolute; /* necesario para superponerlas */
+  top: 0;
+  left: 0;
+
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  background-color: var(--bg-color);
+  color: var(--text-color);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease-in-out;
+  display: flex; /* que todas usen flex siempre */
+}
+
+.celda.activa {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/*BOTONES NAVEGACIÓN*/
+
+.boton-nav {
+  position: absolute;
+  font-size: clamp(1rem, 2dvw, 2rem);
+
+  padding: 0;
+  border: none;
+  background: none;
+
+  cursor: pointer;
+  z-index: 1;
+
+  color: var(--btn-color, inherit);
+}
+
+.btn_arriba {
+  top: 3dvh;
+  left: 50%;
+  transform: translateX(-50%) rotate(0deg);
+  transform-origin: center;
+}
+
+.btn_abajo {
+  bottom: 3dvh;
+  left: 50%;
+  transform: translateX(-50%) rotate(180deg);
+  transform-origin: center;
+}
+
+.btn_derecha {
+  right: 1dvw;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  transform-origin: center;
+}
+
+.btn_izquierda {
+  left: 1dvw;
+  top: 50%;
+  transform: translateY(-50%) rotate(270deg);
+  transform-origin: center;
+}
+
+/*CENTRO*/
+
+.celda.centro {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --btn-color: #000000;
+}
+
+.centro h1 {
+  position: absolute;
+  top: 15%;
+  left: 18%;
+  font-size: clamp(1.5rem, 5dvw, 3rem);
+}
+
+/* 1) Asegúrate de que el wrapper no le ponga ancho fijo */
+.inguma {
+  max-width: 100%; /* para que no sobrepase el ancho de su padre */
+}
+
+/* 2) A la imagen: ocupa todo el ancho del wrapper, 
+      pero siempre entre 50px y 400px, ideal 30dvw */
+.inguma img {
+  display: block;
+  width: 100%;
+  max-width: clamp(50px, 30dvw, 400px);
+  height: auto; /* conserva proporción */
+
+  position: absolute;
+  bottom: 0%;
+  right: 0%;
+}
+
+.animate-e {
+  /* Duración 5s, va y vuelve (alternate), y se repite infinitamente */
+  animation: colorFade 5s infinite alternate ease-in-out;
+}
+
+@keyframes colorFade {
+  from {
+    color: white;
+  } /* inicio en blanco */
+  to {
+    color: red;
+  } /* acaba en rojo */
+}
+
+/*IZQUIERDA*/
+
+.celda.izquierda {
+  --bg-color: black;
+  --text-color: Gainsboro;
+  --theme-color: black;
+  --text2-color: red;
+  --btn-color: red;
+}
+
+.izquierda {
+  font-size: clamp(1.2rem, 1dvw, 2rem);
+}
+
+.izquierda h2,
+.izquierda h3,
+.izquierda h4 {
+  color: var(--text2-color);
+  font-weight: 300;
+  margin: none;
+}
+
+.izquierda h2 {
+  font-size: 2rem;
+}
+
+.izquierda h3 {
+  font-size: 1.5rem;
+}
+
+.izq_1 {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 10dvh;
+  left: 10dvw;
+  gap: 1dvh;
+}
+
+.izq_2 {
+  position: fixed;
+  bottom: 2.5dvh;
+  overflow-x: scroll;
+  width: 100vw;
+}
+
+.izq_3 {
+  position: absolute;
+  left: 10dvw;
+  bottom: 10dvh;
+}
+
+@media (min-width: 768px) {
+  .izq_1,
+  .izq_3 {
+    left: 7.5dvw;
+  }
+}
+
+@media (min-width: 1200px) {
+  .izq_1,
+  .izq_3 {
+    left: 5dvw;
+  }
+}
+
+.lista_libros {
+  display: flex;
+  flex-direction: column;
+  height: 40dvh;
+  gap: 1dvw;
+  overflow-y: auto; /* scroll vertical */
+  overflow-x: clip; /* scroll vertical */
+  width: 80dvw;
+}
+
+.post_content p {
+  margin: 1rem 0rem;
+}
+
+.post_date {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: right;
+}
+
+.indice_libros ul {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 2rem;
+
+  margin: 0;
+  padding: 0;
+  padding-left: 2rem;
+  padding-right: 2rem;
+
+  scrollbar-width: thin;
+}
+
+.indice_libros li {
+  list-style: none;
+  white-space: nowrap;
+}
+
+.post iframe,
+.youtube-wrap,
+.youtube-inner,
+#player {
+  width: 100% !important;
+  max-width: 100%;
+  height: auto !important;
+  display: block;
+  aspect-ratio: 16 / 9;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.2);
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 2rem auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/*ABAJO*/
+
+.carousel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.carousel img {
+  width: 300px;
+  height: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.carousel img:hover {
+  transform: scale(1.03);
+}
+
+.buttons span {
+  font-family: inherit;
+  font-size: clamp(1.5rem, 5dvw, 3rem);
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.buttons span.desactivado {
+  opacity: 0.25;
+  cursor: default;
+  pointer-events: none;
+}
+
+
+
+/*DERECHA*/
+
+.celda.derecha {
+  --theme-color: crimson;
+  --btn-color: crimson;
+}
+
+.der_1_layout {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100dvw;
+  height: 100dvh;
+  z-index: 1;
+  /* Si lo quieres en una celda .derecha, usa height: 100% y quita absolute */
+}
+
+.der_1_img {
+  flex: 2 1 0;
+  width: 100%;
+  min-height: 0;
+  min-width: 0;
+  background-image: url("img/derecha.jpg");
+  background-size: cover; /* que cubra el área aunque recorte */
+  background-position: center; /* siempre centrada */
+  background-repeat: no-repeat;
+  /* opcional: transición suave si cambias de imagen */
+  transition: background-image 0.6s;
+  position: relative;
+}
+
+.der_1_texto {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+
+  padding: 1.5rem;
+
+  font-size: clamp(5rem, 3dvw, 10rem);
+  color: white;
+  background: crimson; /* o tu var(--btn-color) si prefieres */
+}
+
+.der_tipos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+}
+
+.der_1_img span {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+
+  position: absolute;
+  bottom: 2dvh;
+
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+}
+
+.der_tipos p:hover {
+  scale: 1.2;
+}
+
+.der_tipos p:nth-child(1):hover {
+  animation: stretchY 0.4s ease infinite;
+}
+
+@keyframes stretchY {
+  0% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.3);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+.der_tipos p:nth-child(2):hover {
+  animation: sway 0.6s ease infinite;
+}
+
+@keyframes sway {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.der_tipos p:nth-child(3):hover {
+  animation: bounce 0.4s ease infinite;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-8px);
+  }
+  60% {
+    transform: translateY(4px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.der_1_img span {
+  color: crimson;
+  text-shadow: 1px 1px 2px black;
+  font-size: clamp(5rem, 3dvw, 10rem);
+}
+
+/*abajo__abajo*/
+
+.footer-abajo {
+  position: absolute;
+  bottom: 2dvh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--btn-color);
+}
+
+.footer-abajo a {
+  color: var(--btn-color);
+  text-decoration: none;
+}
+
+.footer-abajo a:hover {
+  text-decoration: underline;
+}
+
+.contacto-abajo {
+  width: 100dvw;
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.contacto-abajo img {
+  width: auto;      /* o el tamaño que tú quieras */
+  height: 60dvh;    /* por ejemplo, que no sea enorme */
+  max-width: 90dvw;
+  max-height: 90dvh;
+  object-fit: contain;
+  display: block;
+}
+
+/*ARRIBA*/
+
+.celda.arriba {
+  --bg-color: navy;
+  --theme-color: navy;
+  --text-color: crimson;
+  --btn-color: crimson;
+}
+
+.evento sup {
+  color: LightSkyBlue;
+}
+
+.arriba-timeline {
+  width: 100dvw;
+  height: 85dvh;
+  display: flex;
+  flex-direction: column;
+  font-size: clamp(1rem, 1dvw, 2rem);
+  overflow-y: scroll;
+
+  padding-top: 2rem;
+
+}
+
+.arriba-timeline .evento {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
