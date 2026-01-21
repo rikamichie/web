@@ -11,7 +11,11 @@
         "link": "https://graf.cat/events/event/ofrena-musical-pol-roig-i-erika-michi/",
         "fecha": "2024-10"
       },
- 
+      {
+        "titulo": "Ofrena Musical con Pol Roig",
+        "link": "https://graf.cat/events/event/ofrena-musical-pol-roig-i-erika-michi/",
+        "fecha": "2024-10"
+      },
       {
         "titulo": "Ofrena Musical con Pol Roig",
         "link": "https://graf.cat/events/event/ofrena-musical-pol-roig-i-erika-michi/",
@@ -19,9 +23,6 @@
       }
     ]
   },
-
-
-
   "abajo": {
     "discos": [
       {
@@ -47,9 +48,6 @@
       }
     ]
   },
-
-
-
   "derecha": {
     "imagen": {
       "url": "img/derecha_2.webp",
@@ -74,9 +72,6 @@
       "precio": "55€/h"
     }
   },
-
-
-
   "izquierda": {
     "texto": {
       "parrafo1": "si quieres montar una editorial para esquizofrénicos yo te consigo los textos",
