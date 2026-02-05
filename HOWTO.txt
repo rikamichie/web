@@ -2,3 +2,5 @@
     si las hay, hacer click y darle al botón "sync changes"
 
 para modificar cualquier cosa vas al archivo data.json
+
+command s y luego command w
