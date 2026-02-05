@@ -596,6 +596,19 @@ h2 {
   text-transform: lowercase;
 }
 
+.der_tipos_titulo a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.der_tipos_titulo a:hover {
+  opacity: 0.85;
+}
+
+.der_resenas {
+  margin-top: 2rem;
+}
+
 /* Lista de tipos */
 .der_tipos_lista {
   display: flex;
