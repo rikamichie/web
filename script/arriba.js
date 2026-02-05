@@ -1,23 +1,9 @@
 // Vista de arriba - Timeline de eventos
 // Carga configuración desde data.json
 
-let itemsArriba = [];
+import { getSeccion } from './data.js';
 
-/**
- * Carga los datos de la timeline desde data.json
- */
-async function loadTimelineData() {
-  try {
-    const response = await fetch('./data.json');
-    if (!response.ok) throw new Error('Error al cargar data.json');
-    const data = await response.json();
-    itemsArriba = data.arriba.links;
-    return itemsArriba;
-  } catch (error) {
-    console.error('Error cargando datos de la timeline:', error);
-    return [];
-  }
-}
+let itemsArriba = [];
 
 /**
  * Genera la vista de la timeline con los eventos
@@ -31,7 +17,13 @@ export async function generarVistaArriba() {
 
   // Cargar datos si aún no están disponibles
   if (itemsArriba.length === 0) {
-    await loadTimelineData();
+    const data = await getSeccion('arriba');
+    if (data && data.links) {
+      itemsArriba = data.links;
+    } else {
+      console.error('No se pudieron cargar los datos de la timeline');
+      return;
+    }
   }
 
   // Limpiar contenido previo

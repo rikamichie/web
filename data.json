@@ -5,24 +5,10 @@
         "titulo": "Ofrena Musical con Pol Roig",
         "link": "https://graf.cat/events/event/ofrena-musical-pol-roig-i-erika-michi/",
         "fecha": "2024-10"
-      },
-      {
-        "titulo": "Ofrena Musical con Pol Roig",
-        "link": "https://graf.cat/events/event/ofrena-musical-pol-roig-i-erika-michi/",
-        "fecha": "2024-10"
-      },
-      {
-        "titulo": "Ofrena Musical con Pol Roig",
-        "link": "https://graf.cat/events/event/ofrena-musical-pol-roig-i-erika-michi/",
-        "fecha": "2024-10"
-      },
-      {
-        "titulo": "Ofrena Musical con Pol Roig",
-        "link": "https://graf.cat/events/event/ofrena-musical-pol-roig-i-erika-michi/",
-        "fecha": "2024-10"
       }
     ]
   },
+
   "abajo": {
     "discos": [
       {
@@ -48,41 +34,66 @@
       }
     ]
   },
+
   "derecha": {
-    "imagen": {
-      "url": "img/derecha_2.webp",
-      "alt": "Imagen de fondo"
+    "imagen": "img/derecha_2.webp",
+    "titulo": {
+      "texto": "masajes",
+      "url": "https://www.instagram.com/erikamichi/"
     },
-    "colores": {
-      "themeColor": "crimson",
-      "btnColor": "crimson",
-      "textoColor": "white",
-      "fondoTexto": "crimson"
-    },
-    "contenido": {
-      "linkPrincipal": {
-        "texto": "masajes",
-        "url": "https://www.instagram.com/erikamichi/"
+    "precios": {
+      "poetaCabanyes": {
+        "titulo": "carrer poeta cabanyes",
+        "opciones": [
+          { "duracion": "1h", "precio": "44€" },
+          { "duracion": "2h", "precio": "77€" },
+          { "duracion": "3h", "precio": "111€" }
+        ]
       },
+      "domicilio": {
+        "titulo": "a domicilio",
+        "opciones": [
+          { "duracion": "1h", "precio": "55€" },
+          { "duracion": "2h", "precio": "99€" },
+          { "duracion": "3h", "precio": "144€" }
+        ]
+      }
+    },
+    "tiposMasaje": {
+      "titulo": "tipos de masaje:",
       "tipos": [
-        "descontracturante",
-        "relajante",
-        "deportivo"
-      ],
-      "precio": "55€/h"
+        {
+          "nombre": "descontracturante",
+          "descripcion": "para dolores profundos"
+        },
+        {
+          "nombre": "relajante",
+          "descripcion": "para calmar tu mente y tu cuerpo"
+        },
+        {
+          "nombre": "deportivo",
+          "descripcion": "para cuerpos trabajados"
+        },
+        {
+          "nombre": "neurosedante",
+          "descripcion": "para la zona craneal"
+        },
+        {
+          "nombre": "drenaje linfático",
+          "descripcion": "para retención de líquidos"
+        },
+        {
+          "nombre": "reflexología podal",
+          "descripcion": ""
+        }
+      ]
     }
   },
+
   "izquierda": {
     "texto": {
       "parrafo1": "si quieres montar una editorial para esquizofrénicos yo te consigo los textos",
-      "parrafo2": "enviame tu manuscrito!!! <a href=\"mailto:rikamichie@gmail.com\" target=\"_blank\">rikamichie@gmail.com</a>"
-    },
-    "colores": {
-      "bgColor": "black",
-      "textColor": "Gainsboro",
-      "themeColor": "black",
-      "text2Color": "red",
-      "btnColor": "red"
+      "parrafo2": "enviame tu manuscrito!!! <a href=\"mailto:rikamichie@gmail.com\" target=\"_blank\" rel=\"noopener noreferrer\">rikamichie@gmail.com</a>"
     }
   }
 }

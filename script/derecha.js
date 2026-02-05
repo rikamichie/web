@@ -1,22 +1,125 @@
-// Vista de derecha - Información de servicios
-// Carga configuración desde data.json
+// ============================================
+// VISTA DE DERECHA - INFORMACIÓN DE MASAJES
+// ============================================
+
+import { getSeccion } from './data.js';
 
 let dataDerecha = null;
+let eventListenersAdded = false; // Flag para evitar duplicar listeners
 
 /**
- * Carga los datos de la sección derecha desde data.json
+ * Genera una tabla de precios
  */
-async function loadDerechaData() {
-  try {
-    const response = await fetch('./data.json');
-    if (!response.ok) throw new Error('Error al cargar data.json');
-    const data = await response.json();
-    dataDerecha = data.derecha;
-    return dataDerecha;
-  } catch (error) {
-    console.error('Error cargando datos de la sección derecha:', error);
-    return null;
+function generarTablaPrecios(datos) {
+  if (!datos || !datos.opciones || !Array.isArray(datos.opciones)) {
+    console.warn("⚠️ Datos de precios inválidos:", datos);
+    return "";
   }
+  
+  const items = datos.opciones
+    .map(opcion => `
+      <div class="der_precio_item">
+        <span class="der_precio_texto">${opcion.duracion}: ${opcion.precio}</span>
+      </div>
+    `)
+    .join("");
+  
+  return `
+    <div class="der_tabla_precios">
+      <h3 class="der_tabla_titulo">${datos.titulo}</h3>
+      <div class="der_tabla_items">
+        ${items}
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Genera la lista de tipos de masaje
+ */
+function generarTiposMasaje(datos) {
+  if (!datos || !datos.tipos || !Array.isArray(datos.tipos)) {
+    console.warn("⚠️ Datos de tipos de masaje inválidos:", datos);
+    return "";
+  }
+  
+  const tipos = datos.tipos
+    .map(tipo => {
+      const descripcion = tipo.descripcion
+        ? `<span class="der_tipo_descripcion">${tipo.descripcion}</span>`
+        : "";
+      const nombre = tipo.descripcion ? `${tipo.nombre}:` : tipo.nombre;
+      return `
+        <div class="der_tipo_item">
+          <span class="der_tipo_nombre">${nombre}</span>${descripcion}
+        </div>
+      `;
+    })
+    .join("");
+  
+  return tipos;
+}
+
+/**
+ * Configura la interactividad del contenedor (solo se ejecuta una vez)
+ */
+function configurarInteractividad() {
+  // Si ya se añadieron los listeners, no hacer nada
+  if (eventListenersAdded) {
+    return;
+  }
+  
+  const contenedor = document.getElementById("contenedorMasajes");
+  if (!contenedor) {
+    console.warn("⚠️ No se encontró el contenedor de masajes");
+    return;
+  }
+  
+  const bloque = contenedor.closest(".der_bloque");
+  
+  // Función para expandir/contraer
+  function toggleExpansion() {
+    contenedor.classList.toggle("expandido");
+    if (bloque) {
+      bloque.classList.toggle("expandido");
+    }
+  }
+  
+  // Detectar si es móvil o desktop
+  function checkDevice() {
+    return window.innerWidth < 768;
+  }
+  
+  // Móvil: click para toggle
+  contenedor.addEventListener("click", (e) => {
+    if (checkDevice()) {
+      toggleExpansion();
+    }
+  });
+  
+  // Desktop: hover para expandir/contraer
+  contenedor.addEventListener("mouseenter", () => {
+    if (!checkDevice()) {
+      contenedor.classList.add("expandido");
+      if (bloque) {
+        bloque.classList.add("expandido");
+      }
+    }
+  });
+  
+  contenedor.addEventListener("mouseleave", () => {
+    if (!checkDevice()) {
+      contenedor.classList.remove("expandido");
+      if (bloque) {
+        bloque.classList.remove("expandido");
+      }
+    }
+  });
+  
+  // Marcar que ya se añadieron los listeners
+  eventListenersAdded = true;
+  
+  console.log("✅ Interactividad configurada");
 }
 
 /**
@@ -25,53 +128,53 @@ async function loadDerechaData() {
 export async function generarVistaDerecha() {
   // Cargar datos si aún no están disponibles
   if (!dataDerecha) {
-    await loadDerechaData();
+    dataDerecha = await getSeccion('derecha');
   }
-
+  
   if (!dataDerecha) {
-    console.error('No se pudieron cargar los datos de la sección derecha');
+    console.error("❌ No se pudieron cargar los datos de la sección derecha");
     return;
   }
-
+  
   // Actualizar imagen de fondo
-  const imgDiv = document.querySelector('.der_1_img');
-  if (imgDiv) {
-    imgDiv.style.backgroundImage = `url("${dataDerecha.imagen.url}")`;
+  const imagenDiv = document.querySelector(".der_imagen");
+  if (imagenDiv && dataDerecha.imagen) {
+    imagenDiv.style.backgroundImage = `url("${dataDerecha.imagen}")`;
+  } else {
+    console.warn("⚠️ No se pudo actualizar la imagen de fondo");
   }
-
-  // Actualizar link principal
-  const linkPrincipal = document.querySelector('.der_1_img a');
-  if (linkPrincipal) {
-    linkPrincipal.textContent = dataDerecha.contenido.linkPrincipal.texto;
-    linkPrincipal.href = dataDerecha.contenido.linkPrincipal.url;
+  
+  // Actualizar título
+  const tituloLink = document.getElementById("tituloMasajes");
+  if (tituloLink && dataDerecha.titulo) {
+    tituloLink.textContent = dataDerecha.titulo.texto;
+    tituloLink.href = dataDerecha.titulo.url;
   }
-
-  // Actualizar tipos de servicio
-  const tiposDiv = document.querySelector('.der_tipos');
-  if (tiposDiv && dataDerecha.contenido.tipos) {
-    tiposDiv.innerHTML = dataDerecha.contenido.tipos
-      .map(tipo => `<p>${tipo}</p>`)
-      .join('');
+  
+  // Generar tablas de precios
+  const preciosDiv = document.getElementById("preciosMasajes");
+  if (preciosDiv && dataDerecha.precios) {
+    // ORDEN CORRECTO: poeta cabanyes primero, domicilio después
+    const tablaPoeta = generarTablaPrecios(dataDerecha.precios.poetaCabanyes);
+    const tablaDomicilio = generarTablaPrecios(dataDerecha.precios.domicilio);
+    
+    preciosDiv.innerHTML = tablaPoeta + tablaDomicilio;
+  } else {
+    console.warn("⚠️ No se pudieron generar las tablas de precios");
   }
-
-  // Actualizar precio
-  const precioDiv = document.querySelector('.der_1_texto p');
-  if (precioDiv) {
-    precioDiv.textContent = dataDerecha.contenido.precio;
+  
+  // Generar tipos de masaje
+  const tiposDiv = document.querySelector(".der_tipos_lista");
+  if (tiposDiv && dataDerecha.tiposMasaje) {
+    tiposDiv.innerHTML = generarTiposMasaje(dataDerecha.tiposMasaje);
+  } else {
+    console.warn("⚠️ No se pudieron generar los tipos de masaje");
   }
-
-  // Aplicar colores personalizados
-  const celdaDerecha = document.querySelector('.celda.derecha');
-  if (celdaDerecha) {
-    celdaDerecha.style.setProperty('--theme-color', dataDerecha.colores.themeColor);
-    celdaDerecha.style.setProperty('--btn-color', dataDerecha.colores.btnColor);
-  }
-
-  const textoDiv = document.querySelector('.der_1_texto');
-  if (textoDiv) {
-    textoDiv.style.color = dataDerecha.colores.textoColor;
-    textoDiv.style.backgroundColor = dataDerecha.colores.fondoTexto;
-  }
+  
+  // Configurar interactividad (solo una vez)
+  configurarInteractividad();
+  
+  console.log("✅ Vista de derecha generada");
 }
 
 // Exportar para compatibilidad

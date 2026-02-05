@@ -1,23 +1,9 @@
 // Vista de izquierda - Texto introductorio
 // Carga configuración desde data.json
 
-let dataIzquierda = null;
+import { getSeccion } from './data.js';
 
-/**
- * Carga los datos de la sección izquierda desde data.json
- */
-async function loadIzquierdaData() {
-  try {
-    const response = await fetch('./data.json');
-    if (!response.ok) throw new Error('Error al cargar data.json');
-    const data = await response.json();
-    dataIzquierda = data.izquierda;
-    return dataIzquierda;
-  } catch (error) {
-    console.error('Error cargando datos de la sección izquierda:', error);
-    return null;
-  }
-}
+let dataIzquierda = null;
 
 /**
  * Genera la vista de la sección izquierda
@@ -25,7 +11,7 @@ async function loadIzquierdaData() {
 export async function generarVistaIzquierda() {
   // Cargar datos si aún no están disponibles
   if (!dataIzquierda) {
-    await loadIzquierdaData();
+    dataIzquierda = await getSeccion('izquierda');
   }
 
   if (!dataIzquierda) {
@@ -41,16 +27,8 @@ export async function generarVistaIzquierda() {
       .map(texto => `<p>${texto}</p>`)
       .join('');
   }
-
-  // Aplicar colores personalizados
-  const celdaIzquierda = document.querySelector('.celda.izquierda');
-  if (celdaIzquierda && dataIzquierda.colores) {
-    celdaIzquierda.style.setProperty('--bg-color', dataIzquierda.colores.bgColor);
-    celdaIzquierda.style.setProperty('--text-color', dataIzquierda.colores.textColor);
-    celdaIzquierda.style.setProperty('--theme-color', dataIzquierda.colores.themeColor);
-    celdaIzquierda.style.setProperty('--text2-color', dataIzquierda.colores.text2Color);
-    celdaIzquierda.style.setProperty('--btn-color', dataIzquierda.colores.btnColor);
-  }
+  
+  // Los colores ahora están definidos directamente en el CSS
 }
 
 // Exportar para compatibilidad

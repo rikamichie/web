@@ -1,4 +1,7 @@
 // Carrusel de discos - Carga configuración desde data.json
+
+import { getSeccion } from './data.js';
+
 let discs = [];
 let currentIndex = 0;
 let imgEl;
@@ -9,22 +12,26 @@ let nextBtn;
 // Controles para inicializaciones únicas
 let listenersInitialized = false;
 let observerInitialized = false;
+let updateToken = 0;
+const SWITCH_FADE_MS = 200;
 
 /**
- * Carga los datos del carrusel desde data.json
+ * Precarga una imagen
  */
-async function loadCarouselData() {
-  try {
-    const response = await fetch('./data.json');
-    if (!response.ok) throw new Error('Error al cargar data.json');
-    const data = await response.json();
-    discs = data.abajo.discos;
-    window.discs = discs; // Mantener compatibilidad
-    return discs;
-  } catch (error) {
-    console.error('Error cargando datos del carrusel:', error);
-    return [];
-  }
+function preloadImage(src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = src;
+  });
+}
+
+/**
+ * Espera un tiempo determinado
+ */
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -33,7 +40,14 @@ async function loadCarouselData() {
 export async function initCarousel() {
   // Cargar datos si aún no están disponibles
   if (discs.length === 0) {
-    await loadCarouselData();
+    const data = await getSeccion('abajo');
+    if (data && data.discos) {
+      discs = data.discos;
+      window.discs = discs; // Mantener compatibilidad
+    } else {
+      console.error('No se pudieron cargar los datos del carrusel');
+      return;
+    }
   }
 
   // Referencias al DOM
@@ -110,8 +124,18 @@ export async function initCarousel() {
 /**
  * Actualiza la vista del carrusel con el disco actual
  */
-function updateCarousel() {
+async function updateCarousel() {
   const disc = discs[currentIndex];
+  if (!disc) return;
+  const token = ++updateToken;
+  const carouselEl = imgEl?.closest(".carousel");
+
+  if (carouselEl) {
+    carouselEl.classList.add("is-switching");
+  }
+
+  await Promise.all([preloadImage(disc.image), wait(SWITCH_FADE_MS)]);
+  if (token !== updateToken) return;
 
   // Actualizar imagen y texto
   imgEl.src = disc.image;
@@ -141,6 +165,14 @@ function updateCarousel() {
   // Desactivar botones en los extremos
   prevBtn.classList.toggle("desactivado", currentIndex === 0);
   nextBtn.classList.toggle("desactivado", currentIndex === discs.length - 1);
+
+  if (carouselEl) {
+    requestAnimationFrame(() => {
+      if (token === updateToken) {
+        carouselEl.classList.remove("is-switching");
+      }
+    });
+  }
 }
 
 // Exportar para compatibilidad

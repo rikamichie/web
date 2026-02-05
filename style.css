@@ -94,7 +94,7 @@ h2 {
 }
 
 .btn_derecha {
-  right: 1dvw;
+  right: 1.6dvw;
   top: 50%;
   transform: translateY(-50%) rotate(90deg);
   transform-origin: center;
@@ -128,29 +128,61 @@ h2 {
 }
 
 /* 2) A la imagen: ocupa todo el ancho del wrapper, 
-      pero siempre entre 50px y 400px, ideal 30dvw */
+      en móvil usa 30dvw (entre 50px y 300px) */
 .inguma img {
   display: block;
   width: 100%;
-  max-width: clamp(50px, 30dvw, 400px);
+  max-width: clamp(70px, 40dvw, 300px);
   height: auto; /* conserva proporción */
 
   position: absolute;
-  bottom: 0%;
-  right: 0%;
+  bottom: 0;
+  right: 0;
+}
+
+@media (min-width: 768px) {
+  .inguma img {
+    max-width: clamp(50px, 30dvh, 300px);
+    right: 5dvw;
+  }
 }
 
 .animate-e {
   /* Duración 5s, va y vuelve (alternate), y se repite infinitamente */
-  animation: colorFade 5s infinite alternate ease-in-out;
+  animation: colorFade 5s infinite alternate linear;
+  will-change: color;
+}
+
+.animate-e_inv {
+  /* Misma animación, pero en fase invertida */
+  animation: colorFade 5s infinite alternate-reverse linear;
+  will-change: color;
 }
 
 @keyframes colorFade {
-  from {
-    color: white;
+  0% {
+    color: #ffffff;
   } /* inicio en blanco */
-  to {
-    color: red;
+  35% {
+    color: #ffffff;
+  }
+  45% {
+    color: #fff2f2;
+  }
+  55% {
+    color: #ffd6d6;
+  }
+  65% {
+    color: #ffb3b3;
+  }
+  75% {
+    color: #ff8c8c;
+  }
+  85% {
+    color: #ff5c5c;
+  }
+  100% {
+    color: #ff0000;
   } /* acaba en rojo */
 }
 
@@ -173,7 +205,7 @@ h2 {
 .izquierda h4 {
   color: var(--text2-color);
   font-weight: 300;
-  margin: none;
+  margin: 0;
 }
 
 .izquierda h2 {
@@ -197,7 +229,7 @@ h2 {
   position: fixed;
   bottom: 2.5dvh;
   overflow-x: scroll;
-  width: 100vw;
+  width: 100dvw;
 }
 
 .izq_3 {
@@ -223,21 +255,29 @@ h2 {
 .lista_libros {
   display: flex;
   flex-direction: column;
-  height: 40dvh;
+  height: 60dvh;
   gap: 1dvw;
   overflow-y: auto; /* scroll vertical */
-  overflow-x: clip; /* scroll vertical */
+  overflow-x: clip; /* sin scroll horizontal */
   width: 80dvw;
+  scroll-behavior: smooth; /* transición suave al hacer click en enlaces */
 }
 
 .post_content p {
   margin: 1rem 0rem;
 }
 
+.lista_libros .post_content img {
+  display: block;
+  max-width: 100%;
+  width: auto !important;
+  height: auto !important;
+}
+
 .post_date {
   font-size: 1.5rem;
   display: flex;
-  align-items: right;
+  align-items: flex-end;
 }
 
 .indice_libros ul {
@@ -270,6 +310,12 @@ h2 {
   aspect-ratio: 16 / 9;
 }
 
+.post_content .image-link-expand,
+.post_content button.pencraft,
+.post_content .pencraft.icon-container {
+  display: none !important;
+}
+
 .spinner {
   width: 40px;
   height: 40px;
@@ -286,7 +332,17 @@ h2 {
   }
 }
 
+@media (max-width: 767px) {
+  .lista_libros .post_content img {
+    max-height: 35dvh;
+  }
+}
+
 /*ABAJO*/
+
+.celda.abajo {
+  transition: opacity 0.5s ease-in-out, background-color 0.35s ease;
+}
 
 .carousel {
   position: absolute;
@@ -304,14 +360,24 @@ h2 {
   height: auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.25s ease;
 }
 
 .carousel img:hover {
   transform: scale(1.03);
 }
 
-.buttons span {
+.carousel .caption {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.carousel.is-switching img,
+.carousel.is-switching .caption {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.buttons button {
   font-family: inherit;
   font-size: clamp(1.5rem, 5dvw, 3rem);
   background: none;
@@ -321,7 +387,7 @@ h2 {
   transition: opacity 0.2s ease;
 }
 
-.buttons span.desactivado {
+.buttons button.desactivado {
   opacity: 0.25;
   cursor: default;
   pointer-events: none;
@@ -336,132 +402,308 @@ h2 {
   --btn-color: crimson;
 }
 
-.der_1_layout {
+/* Layout principal */
+.der_layout {
+  width: 100%;
+  height: 100%;
   position: absolute;
   top: 0;
+  left: 0;
   right: 0;
   bottom: 0;
+  overflow: hidden;
+}
+
+/* Imagen de fondo */
+.der_imagen {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
   left: 0;
+  background-image: url('img/derecha_2.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Bloque de contenido */
+.der_bloque {
+  position: absolute;
+  right: 0;
+  bottom: 0;
   display: flex;
   flex-direction: column;
-  width: 100dvw;
-  height: 100dvh;
-  z-index: 1;
-  /* Si lo quieres en una celda .derecha, usa height: 100% y quita absolute */
+  align-items: flex-start;
+  text-align: left;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.der_1_img {
-  flex: 2 1 0;
-  width: 100%;
-  min-height: 0;
-  min-width: 0;
-  background-image: url("img/derecha.jpg");
-  background-size: cover; /* que cubra el área aunque recorte */
-  background-position: center; /* siempre centrada */
-  background-repeat: no-repeat;
-  /* opcional: transición suave si cambias de imagen */
-  transition: background-image 0.6s;
+/* Contenedor crimson */
+.der_contenedor {
   position: relative;
-}
-
-.der_1_texto {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-
-  padding: 1.5rem;
-
-  font-size: clamp(5rem, 3dvw, 10rem);
+  z-index: 1;
+  background-color: crimson;
   color: white;
-  background: crimson; /* o tu var(--btn-color) si prefieres */
+  padding: 1.5rem 2rem;
+  font-family: inherit;
+  text-align: left;
+  
+  /* Transición muy suave */
+  transition: padding 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Sombra sutil */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  
+  /* Sin esquinas redondeadas */
+  border-radius: 0;
 }
 
-.der_tipos {
+/* Estado expandido */
+.der_contenedor.expandido {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Scrollbar personalizada */
+.der_contenedor::-webkit-scrollbar {
+  width: 6px;
+}
+
+.der_contenedor::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.der_contenedor::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.der_contenedor::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Título principal */
+.der_titulo {
+  margin: 0 0 0 0;
+  font-size: 3rem;
+  font-weight: 700;
+  text-align: left;
+  line-height: 1;
+  position: relative;
+  z-index: 2;
+}
+
+.der_titulo a {
+  color: white;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+.der_titulo a:hover {
+  opacity: 0.8;
+}
+
+/* Contenedor de tablas de precios */
+.der_precios {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.5rem;
+  gap: 1.2rem;
+  margin-bottom: 1rem;
+  flex-direction: row;
 }
 
-.der_1_img span {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-
-  position: absolute;
-  bottom: 2dvh;
-
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.2rem;
+/* Texto de llamada */
+.der_ver_tipos {
+  margin-top: 0.4rem;
+  font-size: 0.95rem;
+  text-transform: lowercase;
+  opacity: 0.85;
+  width: 100%;
+  text-align: left;
+  align-self: flex-start;
+  transition: color 0.4s ease, opacity 0.4s ease, transform 0.4s ease;
 }
 
-.der_tipos p:hover {
-  scale: 1.2;
-}
-
-.der_tipos p:nth-child(1):hover {
-  animation: stretchY 0.4s ease infinite;
-}
-
-@keyframes stretchY {
-  0% {
-    transform: scaleY(1);
-  }
-  50% {
-    transform: scaleY(1.3);
-  }
-  100% {
-    transform: scaleY(1);
-  }
-}
-
-.der_tipos p:nth-child(2):hover {
-  animation: sway 0.6s ease infinite;
-}
-
-@keyframes sway {
-  0% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-3px);
-  }
-  50% {
-    transform: translateX(3px);
-  }
-  75% {
-    transform: translateX(-2px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-.der_tipos p:nth-child(3):hover {
-  animation: bounce 0.4s ease infinite;
-}
-
-@keyframes bounce {
-  0% {
-    transform: translateY(0);
-  }
-  30% {
-    transform: translateY(-8px);
-  }
-  60% {
-    transform: translateY(4px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-.der_1_img span {
+.der_contenedor.expandido .der_ver_tipos {
   color: crimson;
-  text-shadow: 1px 1px 2px black;
-  font-size: clamp(5rem, 3dvw, 10rem);
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+/* Cada tabla de precios */
+.der_tabla_precios {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Título de cada tabla */
+.der_tabla_titulo {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: left;
+  text-transform: lowercase;
+  opacity: 0.95;
+}
+
+/* Items de precios */
+.der_tabla_items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+/* Cada fila de precio */
+.der_precio_item {
+  display: block;
+  font-size: 1rem;
+  padding: 0.1rem 0;
+}
+
+.der_precio_texto {
+  white-space: nowrap;
+}
+
+/* Sección de tipos de masaje */
+.der_tipos {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: max-height 0.6s ease, opacity 0.6s ease, transform 0.6s ease,
+              margin-top 0.6s ease, padding-top 0.6s ease;
+}
+
+/* Cuando el contenedor está expandido, mostrar tipos */
+.der_contenedor.expandido .der_tipos {
+  /* margin-top: 1rem;
+  padding-top: 1rem; */
+  border-top: 0;
+  max-height: 100dvh;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Título de tipos */
+.der_tipos_titulo {
+  margin: 0 0 0.6rem 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: lowercase;
+}
+
+/* Lista de tipos */
+.der_tipos_lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* Cada tipo de masaje */
+.der_tipo_item {
+  line-height: 1.3;
+  font-size: 0.95rem;
+}
+
+.der_tipo_nombre {
+  font-weight: bold;
+  text-transform: lowercase;
+}
+
+.der_tipo_descripcion {
+  opacity: 0.9;
+  margin-left: 0.3rem;
+}
+
+/* RESPONSIVE: DESKTOP */
+@media (min-width: 768px) {
+  .der_contenedor {
+    min-width: 450px;
+    max-width: 550px;
+  }
+  
+  .der_contenedor:hover {
+    cursor: pointer;
+  }
+  
+  .der_contenedor:hover .der_tipos {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .der_precios {
+    flex-direction: row;
+  }
+
+  .der_tabla_precios:first-child {
+    flex: 3 1 0;
+  }
+
+  .der_tabla_precios:last-child {
+    flex: 2 1 0;
+  }
+}
+
+/* RESPONSIVE: MÓVIL */
+@media (max-width: 767px) {
+  .der_bloque {
+    right: 0;
+    bottom: 0;
+    left: auto;
+    top: auto;
+    transform: translateX(10dvw);
+  }
+
+  .der_bloque.expandido {
+    transform: translateX(0);
+  }
+  
+  .der_contenedor {
+    width: calc(70dvw - 3rem);
+    max-width: none;
+  }
+  
+  .der_precios {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .der_titulo {
+    font-size: 2.3rem;
+    margin-bottom: 0;
+  }
+  
+  .der_tabla_titulo {
+    font-size: 1rem;
+  }
+  
+  .der_precio_item {
+    font-size: 0.9rem;
+  }
+  
+  .der_tipos_titulo {
+    font-size: 1.1rem;
+  }
+  
+  .der_tipo_item {
+    font-size: 0.85rem;
+  }
+}
+
+/* RESPONSIVE: MÓVIL PEQUEÑO */
+@media (max-width: 480px) {
+  .der_contenedor {
+    width: calc(70dvw - 2rem);
+    padding: 1rem 1.5rem;
+  }
+  
+  .der_titulo {
+    font-size: 2rem;
+  }
 }
 
 /*abajo__abajo*/

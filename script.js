@@ -6,6 +6,38 @@
 const app = document.getElementById("content");
 
 // ============================================
+// PRELOAD DE DATOS
+// ============================================
+
+// Caché global del feed de Substack
+let feedCache = null;
+let feedPromise = null;
+
+/**
+ * Precarga el feed de Substack al inicio para carga instantánea
+ */
+function preloadFeed() {
+  if (feedPromise) return feedPromise;
+  
+  feedPromise = fetch("feed.json")
+    .then((r) => {
+      if (!r.ok) throw new Error("Error al cargar feed.json");
+      return r.json();
+    })
+    .then((feed) => {
+      feedCache = feed;
+      console.log("✅ Feed precargado:", feed.items?.length || 0, "posts");
+      return feed;
+    })
+    .catch((err) => {
+      console.error("❌ Error precargando feed:", err);
+      return null;
+    });
+  
+  return feedPromise;
+}
+
+// ============================================
 // CONFIGURACIÓN DEL GRID
 // ============================================
 
@@ -145,22 +177,26 @@ function inicializarSeccion(archivo, wrapper) {
 
     if (cont) {
       cont.innerHTML = '<div class="spinner"></div>';
-      fetch("feed.json")
-        .then((r) => {
-          if (!r.ok) throw new Error("Respuesta de red incorrecta: " + r.status);
-          return r.json();
-        })
-        .then((feed) => {
-          if (!feed || !feed.items) {
-            cont.innerHTML = "<p>No hay posts para mostrar.</p>";
-            return;
-          }
-          const items = feed.items;
+      
+      // Usar feed precargado o cargarlo si no está disponible
+      const feedPromise = feedCache ? Promise.resolve(feedCache) : preloadFeed();
+      
+      feedPromise.then((feed) => {
+        if (!feed || !feed.items) {
+          cont.innerHTML = "<p>No hay posts para mostrar.</p>";
+          return;
+        }
+        const items = feed.items;
 
-          // Renderizar posts
-          cont.innerHTML = items
-            .map(
-              (post, i) => `
+        // Lazy rendering: renderizar solo los primeros 3 posts inicialmente
+        const POSTS_INICIALES = 3;
+        let postsRenderizados = 0;
+        
+        /**
+         * Renderiza un post individual
+         */
+        function renderPost(post, i) {
+          return `
             <div class="post" id="post-${i}">
               <h2><a href="${post.link}" target="_blank">${post.title}</a></h2>
               <p><em class="post_date">${new Date(post.pubDate).toLocaleDateString()}</em></p>
@@ -168,23 +204,62 @@ function inicializarSeccion(archivo, wrapper) {
                 ${limpiarSubstackExtras(post["content:encoded"] || post["content:encodedSnippet"] || "")}
               </div>
             </div>
-          `
-            )
-            .join("");
-
-          // Generar índice de anchors
-          if (contIndice) {
-            contIndice.innerHTML = `
-              <ul>
-                ${items.map((post, i) => `<li><a href="#post-${i}">${post.title}</a></li>`).join("")}
-              </ul>
-            `;
+          `;
+        }
+        
+        /**
+         * Renderiza más posts (lazy loading)
+         */
+        function renderizarMasPosts() {
+          const postsACargar = Math.min(3, items.length - postsRenderizados);
+          if (postsACargar === 0) return;
+          
+          const fragment = document.createDocumentFragment();
+          const tempDiv = document.createElement('div');
+          
+          for (let i = 0; i < postsACargar; i++) {
+            const index = postsRenderizados + i;
+            tempDiv.innerHTML = renderPost(items[index], index);
+            fragment.appendChild(tempDiv.firstElementChild);
           }
-        })
-        .catch((err) => {
-          console.error("Error al cargar feed:", err);
-          cont.innerHTML = "<p>Error al cargar posts :(</p>";
+          
+          cont.appendChild(fragment);
+          postsRenderizados += postsACargar;
+          
+          console.log(`✅ Renderizados ${postsRenderizados}/${items.length} posts`);
+        }
+        
+        // Renderizar posts iniciales
+        cont.innerHTML = '';
+        postsRenderizados = 0;
+        renderizarMasPosts();
+
+        // Generar índice completo (todos los posts)
+        if (contIndice) {
+          contIndice.innerHTML = `
+            <ul>
+              ${items.map((post, i) => `<li><a href="#post-${i}">${post.title}</a></li>`).join("")}
+            </ul>
+          `;
+        }
+        
+        // Lazy loading: cargar más posts al hacer scroll
+        let scrollTimeout;
+        cont.addEventListener('scroll', () => {
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => {
+            const scrollBottom = cont.scrollHeight - cont.scrollTop - cont.clientHeight;
+            
+            // Si está cerca del final (menos de 300px), cargar más
+            if (scrollBottom < 300 && postsRenderizados < items.length) {
+              renderizarMasPosts();
+            }
+          }, 100);
         });
+      }).catch((err) => {
+        console.error("Error al cargar feed:", err);
+        cont.innerHTML = "<p>Error al cargar posts :(</p>";
+      });
     }
   }
 
@@ -311,6 +386,9 @@ function crearBotonesNavegacion(celda) {
 // ============================================
 // INICIALIZACIÓN
 // ============================================
+
+// Precargar feed de Substack en background
+preloadFeed();
 
 crearPantallas();
 actualizarVista();
