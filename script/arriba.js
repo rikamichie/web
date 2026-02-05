@@ -29,13 +29,8 @@ export async function generarVistaArriba() {
   // Limpiar contenido previo
   timelineDiv.innerHTML = '';
 
-  // Ordenar por fecha (más reciente primero)
-  const eventosOrdenados = itemsArriba
-    .slice()
-    .sort((a, b) => b.fecha.localeCompare(a.fecha));
-
-  // Generar elementos de eventos
-  eventosOrdenados.forEach(item => {
+  // Respetar el orden del data.json
+  itemsArriba.forEach(item => {
     const evento = document.createElement("div");
     evento.className = "evento";
     evento.innerHTML = `
