@@ -99,7 +99,7 @@
       "domicilio": {
         "titulo": "a domicilio",
         "opciones": [
-          { "duracion": "1h", "precio": "55€" },
+          { "duracion": "1h", "precio": "66€" },
           { "duracion": "2h", "precio": "99€" },
           { "duracion": "3h", "precio": "144€" }
         ]
