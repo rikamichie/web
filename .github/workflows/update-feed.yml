@@ -15,7 +15,7 @@ jobs:
 
       - name: Descargar feed HTML desde Render
         run: |
-          curl -s https://rikamichie.onrender.com/feed > feed.json
+          curl -s https://blog-scrapper-jmsb.onrender.com/feed > feed.json
 
       - name: Commit y push si hay cambios
         run: |
