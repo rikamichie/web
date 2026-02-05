@@ -1,0 +1,26 @@
+# .github/workflows/update_feed_html.yml
+name: Actualizar feed JSON domingo a las 12 UTC
+
+on:
+  schedule:
+    - cron: '0 12 * * 0'  # cada domingo a las 12:00 UTC
+  workflow_dispatch:
+
+jobs:
+  actualizar-feed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repo
+        uses: actions/checkout@v4
+
+      - name: Descargar feed HTML desde Render
+        run: |
+          curl -s https://rikamichie.onrender.com/feed > feed.json
+
+      - name: Commit y push si hay cambios
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add feed.json
+          git diff --cached --quiet || git commit -m "Actualizar feed diario"
+          git push
