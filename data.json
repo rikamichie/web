@@ -3,20 +3,55 @@
     "links": [
       
       {
+        "titulo": "MIRA QUE MIRA",
+        "link": "https://www.youtube.com/watch?v=3L012m96DdU",
+        "fecha": "03-2019"
+      },
+      {
+        "titulo": "carmela palomo",
+        "link": "https://www.youtube.com/watch?v=rHIfbS4QwUg",
+        "fecha": "05-2019"
+      },
+      {
+        "titulo": "Perro Le Fou",
+        "link": "https://www.youtube.com/watch?v=NAPxFNibsaQ",
+        "fecha": "11-2019"
+      },
+      {
+        "titulo": "Il trionfo del nuovo Cesare",
+        "link": "https://www.youtube.com/watch?v=m8H0O43Uduk",
+        "fecha": "11-2019"
+      },
+      {
+        "titulo": "POV: eres mi portátil mientras me preparo y llego tarde a una cita a la que no quiero ir",
+        "link": "https://www.youtube.com/watch?v=C4E4N9Znyp4",
+        "fecha": "12-2019"
+      },
+      {
         "titulo": "agradecida no se está mejor",
         "link": "https://www.youtube.com/watch?v=glbk4lkJv9c",
         "fecha": "12-2019"
       },
       {
-        "titulo": "Ofrena Musical con Pol Roig",
-        "link": "https://graf.cat/events/event/ofrena-musical-pol-roig-i-erika-michi/",
-        "fecha": "10-2024"
-      },
-      {
         "titulo": "como en las pelis la vida (piloto)",
         "link": "https://www.youtube.com/watch?v=WjD2wumeiWo",
-        "fecha": "2025"
+        "fecha": "09-2025"
+      },
+      {
+        "titulo": "pingu tiene celos de pinga",
+        "link": "https://graf.cat/events/event/ofrena-musical-pol-roig-i-erika-michi/",
+        "fecha": "11-2025"
+      },
+       {
+        "titulo": "pitch película PerceVal",
+        "link": "https://www.youtube.com/watch?v=kfmP0C3JkzI",
+        "fecha": "01-2026"
+      },
+      {
+        "titulo": "soundcloud rikamichie",
+        "link": "https://soundcloud.com/user-612675776-253813774",
       }
+
     ]
   },
 
