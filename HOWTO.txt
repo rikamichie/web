@@ -1,0 +1,4 @@
+1o verificar en el tercer icono de la izquierda que no hayan notificaciones
+    si las hay, hacer click y darle al botón "sync changes"
+
+para modificar cualquier cosa vas al archivo data.json
